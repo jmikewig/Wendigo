@@ -9,6 +9,7 @@ import { createInteractables } from './entities/interactables.js';
 import { HUD, drawArrow } from './UI/hud.js';
 import { JournalModal } from './UI/journalModal.js';
 import { BlueprintModal } from './UI/blueprintModal.js';
+import { TouchControls } from './UI/touchControls.js';
 import { WatchtowerMap, CABIN, WORLD_W, WORLD_H } from './world/watchtowerMap.js';
 
 const W = 480, H = 270;                       // 16:9 viewport
@@ -158,6 +159,7 @@ loadAssets().then((assets) => {
   };
   const dir = new Director(g);
   g.director = dir;
+  const touch = new TouchControls(g.input);
 
   let last = performance.now();
   function frame(now) {
@@ -165,6 +167,7 @@ loadAssets().then((assets) => {
     last = now;
     const t = now / 1000;
     dir.update(dt);
+    touch.sync(dir, g);
     g.shake = Math.max(0, g.shake - dt);
     render(g, dir, t);
     g.input.endFrame();

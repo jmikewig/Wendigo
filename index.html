@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>The Wendigo — Watchtower 4 (Vertical Slice)</title>
   <meta name="description" content="The Wendigo: a retro 8-bit survival horror game. Vertical slice of the Watchtower 4 intro and torch tutorial." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,6 +37,11 @@
           <div class="journal-nav">
             <span id="journalPageNum"></span>
             <span class="hint">[A/D] TURN PAGE &nbsp; [E] CLOSE</span>
+            <span class="touch-modal-btns">
+              <button type="button" class="touch-nav-btn" data-key="KeyA">◀ PREV</button>
+              <button type="button" class="touch-nav-btn" data-key="KeyD">NEXT ▶</button>
+              <button type="button" class="touch-nav-btn close" data-key="KeyE">CLOSE</button>
+            </span>
           </div>
         </div>
       </div>
@@ -60,7 +67,13 @@
             </svg>
             <ol id="bpParts" class="bp-parts"></ol>
           </div>
-          <div class="journal-nav"><span id="bpCount">PARTS 0/5</span><span class="hint">[E] CLOSE</span></div>
+          <div class="journal-nav">
+            <span id="bpCount">PARTS 0/5</span>
+            <span class="hint">[E] CLOSE</span>
+            <span class="touch-modal-btns">
+              <button type="button" class="touch-nav-btn close" data-key="KeyE">CLOSE</button>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -71,7 +84,7 @@
         <div class="title-inner">
           <h2 class="title-logo">THE WENDIGO</h2>
           <p class="title-sub">WATCHTOWER 4 — VERTICAL SLICE</p>
-          <p class="blink">PRESS ANY KEY</p>
+          <p class="blink" id="titlePrompt">PRESS ANY KEY</p>
           <p class="controls">WASD / ARROWS MOVE &nbsp;·&nbsp; E INTERACT &nbsp;·&nbsp; SPACE TORCH</p>
         </div>
       </div>
@@ -81,15 +94,32 @@
         <div class="title-inner">
           <h2 class="gameover-text">YOU WERE TAKEN</h2>
           <p id="gameoverMsg" class="title-sub"></p>
-          <p class="blink">PRESS [E] TO TRY AGAIN</p>
+          <p class="blink" id="gameoverPrompt">PRESS [E] TO TRY AGAIN</p>
         </div>
       </div>
 
       <!-- Cutscene Video -->
       <div id="cutscene" class="overlay hidden">
         <video id="cutsceneVideo" src="Assets/cutscenes/wendigo_reveal.mp4" preload="auto" playsinline></video>
-        <span class="cutscene-skip">[ESC] SKIP</span>
+        <button id="cutsceneSkip" type="button" class="cutscene-skip">[ESC] SKIP</button>
       </div>
+
+      <!-- Touch Controls (touch devices only) -->
+      <div id="touchControls" class="hidden" aria-hidden="true">
+        <div id="dpad" role="group" aria-label="Directional pad">
+          <div class="dpad-dir up" data-dir="up">▲</div>
+          <div class="dpad-dir right" data-dir="right">▶</div>
+          <div class="dpad-dir down" data-dir="down">▼</div>
+          <div class="dpad-dir left" data-dir="left">◀</div>
+          <div class="dpad-center"></div>
+        </div>
+        <div id="touchActions">
+          <button id="btnTorch" type="button" class="touch-btn torch">TORCH</button>
+          <button id="btnAct" type="button" class="touch-btn act">ACT</button>
+        </div>
+      </div>
+
+      <div id="rotateHint">↻ ROTATE FOR FULLSCREEN</div>
 
       <!-- Audio Settings -->
       <div id="audioControl">
