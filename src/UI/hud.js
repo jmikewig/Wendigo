@@ -25,6 +25,11 @@ export class HUD {
     }
   }
   setPrompt(text) {
+    if (text && document.documentElement.classList.contains('touch-device')) {
+      text = text
+        .replace('PRESS [SPACE] TO LIGHT TORCH', '[B] TO LIGHT TORCH')
+        .replace('[E]', '[A]');
+    }
     if (this.prompt.textContent !== text) this.prompt.textContent = text;
     this.prompt.classList.toggle('hidden', !text);
   }

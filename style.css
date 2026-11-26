@@ -357,7 +357,7 @@ html, body {
   border: 2px solid rgba(243, 230, 200, 0.45);
   color: var(--ink);
   font-family: inherit;
-  font-size: clamp(7px, 2.2dvh, 10px);
+  font-size: clamp(14px, 4.5dvh, 22px);
   text-shadow: 2px 2px 0 #000;
   cursor: pointer;
 }
