@@ -183,7 +183,8 @@ html, body {
   flex-shrink: 0;
   filter: drop-shadow(2px 2px 0 #000);
 }
-#audioBtn {
+#audioBtn,
+#fsBtn {
   width: clamp(24px, 3.2vw, 34px);
   height: clamp(24px, 3.2vw, 34px);
   padding: 4px;
@@ -193,8 +194,10 @@ html, body {
   color: var(--ink);
   cursor: pointer;
 }
-#audioBtn:hover { border-color: var(--gold); color: var(--gold); }
-#audioBtn svg { width: 100%; height: 100%; display: block; }
+#audioBtn:hover,
+#fsBtn:hover { border-color: var(--gold); color: var(--gold); }
+#audioBtn svg,
+#fsBtn svg { width: 100%; height: 100%; display: block; }
 #audioBtn .mute-slash { display: none; }
 #audioBtn.all-muted .speaker-cone { opacity: 0.45; }
 #audioBtn.all-muted .mute-slash { display: block; }
@@ -295,19 +298,19 @@ html, body {
 .touch-nav-btn:active { background: rgba(255, 211, 77, 0.25); }
 
 #touchControls {
-  position: absolute; inset: 0;
-  z-index: 15;
+  position: fixed; inset: 0;
+  z-index: 40;
   pointer-events: none;
 }
 #dpad {
-  position: absolute;
-  bottom: max(5%, env(safe-area-inset-bottom, 10px));
-  left: max(3.5%, env(safe-area-inset-left, 10px));
-  width: clamp(92px, 19vw, 138px);
-  height: clamp(92px, 19vw, 138px);
+  position: fixed;
+  bottom: max(18px, 10dvh, env(safe-area-inset-bottom, 12px));
+  left: max(12px, env(safe-area-inset-left, 12px));
+  width: clamp(92px, 28dvh, 132px);
+  height: clamp(92px, 28dvh, 132px);
   border-radius: 50%;
-  background: rgba(10, 6, 14, 0.52);
-  border: 2px solid rgba(243, 230, 200, 0.3);
+  background: rgba(10, 6, 14, 0.62);
+  border: 2px solid rgba(243, 230, 200, 0.32);
   pointer-events: auto;
   touch-action: none;
 }
@@ -324,7 +327,7 @@ html, body {
   width: 34%; height: 34%;
   display: grid; place-items: center;
   color: rgba(243, 230, 200, 0.65);
-  font-size: clamp(9px, 1.8vw, 14px);
+  font-size: clamp(9px, 3dvh, 14px);
   border-radius: 4px;
 }
 .dpad-dir.up { top: 4%; left: 33%; }
@@ -338,26 +341,27 @@ html, body {
 }
 
 #touchActions {
-  position: absolute;
-  bottom: max(6%, env(safe-area-inset-bottom, 10px));
-  right: max(3.5%, env(safe-area-inset-right, 10px));
-  display: flex; gap: clamp(8px, 1.8vw, 16px); align-items: flex-end;
+  position: fixed;
+  bottom: max(18px, 10dvh, env(safe-area-inset-bottom, 12px));
+  right: max(12px, env(safe-area-inset-right, 12px));
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(10px, 3.5dvh, 18px);
   pointer-events: auto;
   touch-action: none;
 }
 .touch-btn {
-  width: clamp(54px, 11vw, 76px);
-  height: clamp(54px, 11vw, 76px);
+  width: clamp(54px, 17dvh, 72px);
+  height: clamp(54px, 17dvh, 72px);
   border-radius: 50%;
-  background: rgba(10, 6, 14, 0.62);
+  background: rgba(10, 6, 14, 0.68);
   border: 2px solid rgba(243, 230, 200, 0.45);
   color: var(--ink);
   font-family: inherit;
-  font-size: clamp(7px, 1.3vw, 10px);
+  font-size: clamp(7px, 2.2dvh, 10px);
   text-shadow: 2px 2px 0 #000;
   cursor: pointer;
 }
-.touch-btn.torch { margin-bottom: 10%; border-color: rgba(255, 138, 42, 0.55); }
+.touch-btn.torch { border-color: rgba(255, 138, 42, 0.55); }
 .touch-btn.act.ready {
   border-color: var(--gold);
   color: var(--gold);

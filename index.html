@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <title>The Wendigo — Watchtower 4 (Vertical Slice)</title>
   <meta name="description" content="The Wendigo: a retro 8-bit survival horror game. Vertical slice of the Watchtower 4 intro and torch tutorial." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -104,21 +106,6 @@
         <button id="cutsceneSkip" type="button" class="cutscene-skip">[ESC] SKIP</button>
       </div>
 
-      <!-- Touch Controls (touch devices only) -->
-      <div id="touchControls" class="hidden" aria-hidden="true">
-        <div id="dpad" role="group" aria-label="Directional pad">
-          <div class="dpad-dir up" data-dir="up">▲</div>
-          <div class="dpad-dir right" data-dir="right">▶</div>
-          <div class="dpad-dir down" data-dir="down">▼</div>
-          <div class="dpad-dir left" data-dir="left">◀</div>
-          <div class="dpad-center"></div>
-        </div>
-        <div id="touchActions">
-          <button id="btnTorch" type="button" class="touch-btn torch">TORCH</button>
-          <button id="btnAct" type="button" class="touch-btn act">ACT</button>
-        </div>
-      </div>
-
       <div id="rotateHint">↻ ROTATE FOR FULLSCREEN</div>
 
       <!-- Audio Settings -->
@@ -133,6 +120,16 @@
               <rect x="5" y="3" width="1" height="1" fill="currentColor" />
             </svg>
           </span>
+          <button id="fsBtn" type="button" class="hidden" aria-label="Toggle fullscreen">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
+              <g fill="currentColor">
+                <rect x="2" y="2" width="4" height="2" /><rect x="2" y="2" width="2" height="4" />
+                <rect x="10" y="2" width="4" height="2" /><rect x="12" y="2" width="2" height="4" />
+                <rect x="2" y="12" width="4" height="2" /><rect x="2" y="10" width="2" height="4" />
+                <rect x="10" y="12" width="4" height="2" /><rect x="12" y="10" width="2" height="4" />
+              </g>
+            </svg>
+          </button>
           <button id="audioBtn" type="button" aria-label="Audio settings" aria-expanded="false">
             <svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
               <g class="speaker-cone" fill="currentColor">
@@ -160,6 +157,21 @@
       </div>
 
       <div id="crt"></div>
+    </div>
+
+    <!-- Touch Controls (full viewport, outside #screen so they sit in side gutters) -->
+    <div id="touchControls" class="hidden" aria-hidden="true">
+      <div id="dpad" role="group" aria-label="Directional pad">
+        <div class="dpad-dir up" data-dir="up">▲</div>
+        <div class="dpad-dir right" data-dir="right">▶</div>
+        <div class="dpad-dir down" data-dir="down">▼</div>
+        <div class="dpad-dir left" data-dir="left">◀</div>
+        <div class="dpad-center"></div>
+      </div>
+      <div id="touchActions">
+        <button id="btnTorch" type="button" class="touch-btn torch">TORCH</button>
+        <button id="btnAct" type="button" class="touch-btn act">ACT</button>
+      </div>
     </div>
   </main>
   <script type="module" src="src/main.js"></script>

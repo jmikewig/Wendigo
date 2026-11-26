@@ -25,14 +25,34 @@ export class TouchControls {
     this._bindActions();
   }
 
+  _requestFullscreen() {
+    document.documentElement.requestFullscreen?.()?.catch(() => {});
+    screen.orientation?.lock?.('landscape')?.catch(() => {});
+  }
+
   _bindScreens() {
     const audioWrap = document.getElementById('audioControl');
     const title = document.getElementById('title');
     const gameover = document.getElementById('gameover');
     const skipBtn = document.getElementById('cutsceneSkip');
+    const fsBtn = document.getElementById('fsBtn');
 
-    title?.addEventListener('pointerdown', (e) => {
+    if (fsBtn && document.fullscreenEnabled) {
+      fsBtn.classList.remove('hidden');
+      fsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.()?.catch(() => {});
+        } else {
+          this._requestFullscreen();
+        }
+        fsBtn.blur();
+      });
+    }
+
+    title?.addEventListener('click', (e) => {
       if (audioWrap?.contains(e.target)) return;
+      this._requestFullscreen();
       this.input.triggerAny();
     });
 
