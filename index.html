@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Wendigo — Watchtower 4 (Vertical Slice)</title>
+  <meta name="description" content="The Wendigo: a retro 8-bit survival horror game. Vertical slice of the Watchtower 4 intro and torch tutorial." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game-root">
+    <h1 class="sr-only">The Wendigo — Watchtower 4</h1>
+    <div id="screen">
+      <canvas id="gameCanvas" width="480" height="270"></canvas>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="banner" class="hidden"></div>
+        <div id="objective"></div>
+        <div id="torchWrap" class="hidden">
+          <span class="label">TORCH</span>
+          <div id="torchBar"><div id="torchFill"></div></div>
+        </div>
+        <div id="woodCount" class="hidden">WOOD x<span id="woodNum">0</span></div>
+        <div id="prompt" class="hidden"></div>
+      </div>
+
+      <!-- Journal -->
+      <div id="journal" class="overlay hidden" role="dialog" aria-labelledby="journalTitle">
+        <div class="journal-book">
+          <div class="journal-page" id="journalPage"></div>
+          <div class="journal-nav">
+            <span id="journalPageNum"></span>
+            <span class="hint">[A/D] TURN PAGE &nbsp; [E] CLOSE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workbench Blueprint -->
+      <div id="blueprint" class="overlay hidden" role="dialog" aria-labelledby="bpTitle">
+        <div class="blueprint-sheet">
+          <h3 id="bpTitle">THE WENDIGO KILLER — SCHEMATIC</h3>
+          <div class="bp-body">
+            <svg class="bp-diagram" viewBox="0 0 200 90" aria-hidden="true">
+              <g fill="none" stroke="#dfeeff" stroke-width="1.5" stroke-dasharray="3 2">
+                <rect x="8" y="20" width="28" height="56" rx="10" />
+                <rect x="44" y="58" width="22" height="16" />
+                <path d="M66 66 C 90 66, 90 46, 108 46" />
+                <rect x="108" y="38" width="62" height="14" />
+                <rect x="118" y="52" width="10" height="18" />
+                <rect x="170" y="40" width="16" height="10" />
+              </g>
+              <g fill="#ffd34d" font-family="'Press Start 2P', monospace" font-size="7">
+                <text x="18" y="14">1</text><text x="51" y="86">2</text>
+                <text x="82" y="44">3</text><text x="136" y="32">4</text><text x="175" y="34">5</text>
+              </g>
+            </svg>
+            <ol id="bpParts" class="bp-parts"></ol>
+          </div>
+          <div class="journal-nav"><span id="bpCount">PARTS 0/5</span><span class="hint">[E] CLOSE</span></div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div id="title" class="overlay">
+        <video id="titleVideo" src="Assets/cutscenes/title_bg.mp4" autoplay muted loop playsinline></video>
+        <audio id="titleAudio" src="Assets/audio/title_theme.wav" loop preload="auto"></audio>
+        <div class="title-inner">
+          <h2 class="title-logo">THE WENDIGO</h2>
+          <p class="title-sub">WATCHTOWER 4 — VERTICAL SLICE</p>
+          <p class="blink">PRESS ANY KEY</p>
+          <p class="controls">WASD / ARROWS MOVE &nbsp;·&nbsp; E INTERACT &nbsp;·&nbsp; SPACE TORCH</p>
+        </div>
+      </div>
+
+      <!-- Game Over -->
+      <div id="gameover" class="overlay hidden">
+        <div class="title-inner">
+          <h2 class="gameover-text">YOU WERE TAKEN</h2>
+          <p id="gameoverMsg" class="title-sub"></p>
+          <p class="blink">PRESS [E] TO TRY AGAIN</p>
+        </div>
+      </div>
+
+      <!-- Cutscene Video -->
+      <div id="cutscene" class="overlay hidden">
+        <video id="cutsceneVideo" src="Assets/cutscenes/wendigo_reveal.mp4" preload="auto" playsinline></video>
+        <span class="cutscene-skip">[ESC] SKIP</span>
+      </div>
+
+      <!-- Audio Settings -->
+      <div id="audioControl">
+        <div class="audio-row">
+          <span id="musicCallout" class="music-callout">
+            <span>ENABLE MUSIC</span>
+            <svg class="callout-arrow" viewBox="0 0 6 7" shape-rendering="crispEdges" aria-hidden="true">
+              <rect x="0" y="0" width="2" height="7" fill="currentColor" />
+              <rect x="2" y="1" width="2" height="5" fill="currentColor" />
+              <rect x="4" y="2" width="1" height="3" fill="currentColor" />
+              <rect x="5" y="3" width="1" height="1" fill="currentColor" />
+            </svg>
+          </span>
+          <button id="audioBtn" type="button" aria-label="Audio settings" aria-expanded="false">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
+              <g class="speaker-cone" fill="currentColor">
+                <rect x="2" y="5" width="3" height="6" />
+                <rect x="6" y="5" width="2" height="6" />
+                <rect x="8" y="4" width="2" height="8" />
+                <rect x="10" y="3" width="2" height="10" />
+                <rect x="12" y="2" width="2" height="12" />
+              </g>
+              <g class="mute-slash" fill="#ff7a8a">
+                <rect x="2" y="2" width="2" height="2" />
+                <rect x="4" y="4" width="2" height="2" />
+                <rect x="6" y="6" width="2" height="2" />
+                <rect x="8" y="8" width="2" height="2" />
+                <rect x="10" y="10" width="2" height="2" />
+                <rect x="12" y="12" width="2" height="2" />
+              </g>
+            </svg>
+          </button>
+        </div>
+        <div id="audioPanel" class="hidden" role="menu">
+          <button id="toggleMusic" type="button" class="audio-opt" data-on="false"><span>MUSIC</span><em>OFF</em></button>
+          <button id="toggleSfx" type="button" class="audio-opt" data-on="true"><span>SFX</span><em>ON</em></button>
+        </div>
+      </div>
+
+      <div id="crt"></div>
+    </div>
+  </main>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
