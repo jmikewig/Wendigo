@@ -15,9 +15,11 @@ export class TouchControls {
     document.documentElement.classList.add('touch-device');
     const titlePrompt = document.getElementById('titlePrompt');
     const overPrompt = document.getElementById('gameoverPrompt');
+    const endPrompt = document.getElementById('endingPrompt');
     const skipBtn = document.getElementById('cutsceneSkip');
     if (titlePrompt) titlePrompt.textContent = 'TAP TO START';
     if (overPrompt) overPrompt.textContent = 'TAP TO TRY AGAIN';
+    if (endPrompt) endPrompt.textContent = 'TAP TO PLAY AGAIN';
     if (skipBtn) skipBtn.textContent = 'SKIP ▸';
 
     this._bindScreens();
@@ -34,6 +36,7 @@ export class TouchControls {
     const audioWrap = document.getElementById('audioControl');
     const title = document.getElementById('title');
     const gameover = document.getElementById('gameover');
+    const ending = document.getElementById('ending');
     const skipBtn = document.getElementById('cutsceneSkip');
     const fsBtn = document.getElementById('fsBtn');
 
@@ -57,6 +60,11 @@ export class TouchControls {
     });
 
     gameover?.addEventListener('pointerdown', (e) => {
+      if (audioWrap?.contains(e.target)) return;
+      this.input.tap('KeyE');
+    });
+
+    ending?.addEventListener('pointerdown', (e) => {
       if (audioWrap?.contains(e.target)) return;
       this.input.tap('KeyE');
     });

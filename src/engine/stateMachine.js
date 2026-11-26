@@ -3,7 +3,7 @@ import { near } from '../entities/interactables.js';
 
 export const PHASE = {
   TITLE: 'TITLE', DUSK: 'DUSK', DREAD: 'DREAD', CUTSCENE: 'CUTSCENE',
-  IGNITION: 'IGNITION', HUB: 'HUB', COMPLETE: 'COMPLETE', GAMEOVER: 'GAMEOVER',
+  IGNITION: 'IGNITION', HUB: 'HUB', COMPLETE: 'COMPLETE', ENDING: 'ENDING', GAMEOVER: 'GAMEOVER',
 };
 
 const MOVABLE = [PHASE.DUSK, PHASE.DREAD, PHASE.IGNITION, PHASE.HUB, PHASE.COMPLETE];
@@ -19,6 +19,9 @@ export class Director {
     this.journalRead = false;
     this.revealing = false;
     this.reveal = 0;          // 0 → 1 exterior fade-in (Stage 3)
+    this.sleeping = false;
+    this.endT = 0;
+    this.endingShown = false;
     this.checkpoint = null;
     this.setupAudioMenu();
     this.startTitleAudio();
@@ -124,7 +127,7 @@ export class Director {
       case PHASE.DREAD: return player.y < DECK_Y ? items.door : items.railing;
       case PHASE.IGNITION: return player.wood === 0 ? items.wood : null;
       case PHASE.HUB: return items.fireplace;
-      case PHASE.COMPLETE: return this.benchSeen ? null : items.workbench;
+      case PHASE.COMPLETE: return this.benchSeen ? items.bed : items.workbench;
       default: return null;
     }
   }
@@ -212,11 +215,25 @@ export class Director {
             blueprint.open(() => {
               this.benchSeen = true;
               audio.pickup();
-              hud.setBanner('PARTS 0/5 — THE HUNT BEGINS… (END OF SLICE)');
-              hud.setObjective('FIND THE 5 PARTS OF THE WENDIGO KILLER');
+              hud.setBanner('');
+              hud.setObjective('GET SOME SLEEP UNTIL DAWN');
             });
           }
+        } else if (this.benchSeen && near(player, items.bed)) {
+          hud.setPrompt('[E] SLEEP UNTIL DAWN');
+          if (input.hit('KeyE')) this.goToSleep();
         }
+        break;
+
+      case PHASE.ENDING:
+        this.endT += dt;
+        if (this.endT >= 1.2 && !this.endingShown) {
+          this.endingShown = true;
+          const el = document.getElementById('ending');
+          el.classList.remove('hidden');
+          requestAnimationFrame(() => el.classList.add('show'));
+        }
+        if (this.endT >= 2.8 && input.hit('KeyE', 'Space', 'Enter')) this.replay();
         break;
 
       case PHASE.GAMEOVER:
@@ -313,10 +330,67 @@ export class Director {
     player.torchLit = false;
     wendigo.active = false;
     audio.ignite(); audio.setGrowl(0); audio.setWind(0.06);
-    setTimeout(() => audio.startMusic(), 1200);
+    this._musicTimer = setTimeout(() => audio.startMusic(), 1200);
     hud.setBanner('WATCHTOWER 4 IS SAFE', false, 3);
     hud.setObjective("EXAMINE CARL'S WORKBENCH");
     this.phase = PHASE.COMPLETE;
+  }
+
+  goToSleep() {
+    const { audio, hud } = this.g;
+    this.phase = PHASE.ENDING;
+    this.sleeping = true;
+    this.endT = 0;
+    this.endingShown = false;
+    hud.setObjective('');
+    hud.setPrompt('');
+    hud.setBanner('');
+    audio.setWind(0.03);
+  }
+
+  replay() {
+    const { audio, hud, map, player, wendigo, items } = this.g;
+    clearTimeout(this._musicTimer);
+    clearInterval(this._titleFade);
+
+    const endEl = document.getElementById('ending');
+    endEl.classList.remove('show');
+    endEl.classList.add('hidden');
+    document.getElementById('gameover').classList.add('hidden');
+
+    this.phase = PHASE.TITLE;
+    this.sleeping = false;
+    this.fireLit = false;
+    this.journalRead = false;
+    this.revealing = false;
+    this.reveal = 0;
+    this.benchSeen = false;
+    this.endT = 0;
+    this.endingShown = false;
+    this.checkpoint = null;
+
+    map.doorLocked = true;
+    player.x = 132; player.y = 130;
+    player.dir = 'down'; player.moving = false;
+    player.wood = 0; player.torchLit = false; player.torchTime = 0;
+    wendigo.active = false; wendigo.state = 'hidden'; wendigo.alpha = 1; wendigo.next = null;
+    items.wood.visible = true;
+
+    audio.stopMusic();
+    audio.setWind(0);
+    audio.setGrowl(0);
+    hud.setObjective(''); hud.setPrompt(''); hud.setBanner('');
+    hud.setTorch(false, 0); hud.setWood(0, false);
+
+    document.getElementById('title').classList.remove('hidden');
+    const titleVideo = document.getElementById('titleVideo');
+    if (titleVideo) { titleVideo.currentTime = 0; titleVideo.play().catch(() => {}); }
+    const titleAudio = document.getElementById('titleAudio');
+    if (titleAudio) {
+      titleAudio.volume = 0.7;
+      titleAudio.currentTime = 0;
+      if (audio.musicOn) titleAudio.play().catch(() => {});
+    }
   }
 
   gameOver(msg) {

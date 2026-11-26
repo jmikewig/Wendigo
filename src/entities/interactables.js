@@ -7,6 +7,7 @@ export function createInteractables() {
     wood: { x: 24, y: 34, ay: 34, r: 16, visible: true },       // top-left landing
     fireplace: { x: 137, y: 92, ay: 86, r: 24, visible: true },
     workbench: { x: 82, y: 92, ay: 72, r: 24, visible: true },
+    bed: { x: 199, y: 82, ay: 82, r: 28, box: { x0: 164, x1: 192, y0: 88, y1: 126 }, visible: true },
   };
 }
 

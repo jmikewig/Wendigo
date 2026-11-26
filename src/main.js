@@ -22,6 +22,7 @@ const ASSET_PATHS = {
   base2: './Assets/environment/watchtower_base_state2.png',
   base3: './Assets/environment/watchtower_base_state3.png',
   base4: './Assets/environment/watchtower_base_state4.png',
+  base5: './Assets/environment/watchtower_base_state5.png',
   fg1: './Assets/environment/watchtower_foreground_state1.png',
   fg2: './Assets/environment/watchtower_foreground_state2.png',
   fg3: './Assets/environment/watchtower_foreground_state3.png',
@@ -104,7 +105,8 @@ function render(g, dir, t) {
   if (dir.fireLit) g.map.renderFireplaceFire(ctx, t);
 
   // 3. Entity Layer (Y-sorted by foot Y-coordinate, split around cabin/door vs bottom railing)
-  const entities = [{ y: g.player.y, draw: (c) => g.player.render(c, t) }];
+  const entities = [];
+  if (!dir.sleeping) entities.push({ y: g.player.y, draw: (c) => g.player.render(c, t) });
   if (g.wendigo.active) entities.push({ y: g.wendigo.y, draw: (c) => g.wendigo.render(c, t) });
   entities.sort((a, b) => a.y - b.y);
 
@@ -118,14 +120,14 @@ function render(g, dir, t) {
 
   drawEntities(entities.filter((e) => e.y < FRONT_DECK_Y));
 
-  // 4a. Upper Foreground Depth Overlay (desk, cabin walls, doorframe, open door, stair railing)
-  g.map.renderForegroundUpper(ctx, dir, W, H, FG_SPLIT_Y);
+  // 4a. Upper Foreground Depth Overlay (skipped while sleeping so hat on wall stays visible)
+  if (!dir.sleeping) g.map.renderForegroundUpper(ctx, dir, W, H, FG_SPLIT_Y);
 
   // 4b. Front Deck Entities (pass in front of open door & cabin wall)
   drawEntities(entities.filter((e) => e.y >= FRONT_DECK_Y));
 
   // 4c. Lower Foreground Depth Overlay (bottom deck railing)
-  g.map.renderForegroundLower(ctx, dir, W, H, FG_SPLIT_Y);
+  if (!dir.sleeping) g.map.renderForegroundLower(ctx, dir, W, H, FG_SPLIT_Y);
 
   // 5. Dynamic Lighting
   g.lighting.render(ctx, lightState(g, dir, t));

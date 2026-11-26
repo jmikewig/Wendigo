@@ -51,6 +51,10 @@ export class WatchtowerMap {
   }
 
   renderBase(ctx, dir, W, H) {
+    if (dir.sleeping) {
+      ctx.drawImage(this.assets.base5, 0, 0, W, H);
+      return;
+    }
     if (dir.revealing && !dir.fireLit && dir.reveal < 1) {
       ctx.drawImage(this.assets.base2, 0, 0, W, H);
       ctx.save();
