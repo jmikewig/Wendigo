@@ -51,20 +51,36 @@ export class WatchtowerMap {
   }
 
   renderBase(ctx, dir, W, H) {
+    const woodTaken = !dir.g.items.wood.visible;
+    const drawNoWoodPatch = () => {
+      if (!woodTaken) return;
+      const src = this.assets.base3a;
+      const sx = 262, sy = 68, sw = 68, sh = 56;
+      ctx.drawImage(
+        src,
+        sx, sy, sw, sh,
+        (sx / src.width) * W, (sy / src.height) * H,
+        (sw / src.width) * W, (sh / src.height) * H
+      );
+    };
+
     if (dir.sleeping) {
       ctx.drawImage(this.assets.base5, 0, 0, W, H);
+      drawNoWoodPatch();
       return;
     }
     if (dir.revealing && !dir.fireLit && dir.reveal < 1) {
       ctx.drawImage(this.assets.base2, 0, 0, W, H);
       ctx.save();
       ctx.globalAlpha = dir.reveal;
-      ctx.drawImage(this.assets.base3, 0, 0, W, H);
+      ctx.drawImage(woodTaken ? this.assets.base3a : this.assets.base3, 0, 0, W, H);
       ctx.restore();
       return;
     }
     const state = this.getStateIndex(dir);
-    ctx.drawImage(this.assets[`base${state}`], 0, 0, W, H);
+    const key = state === 3 && woodTaken ? 'base3a' : `base${state}`;
+    ctx.drawImage(this.assets[key], 0, 0, W, H);
+    if (state === 4) drawNoWoodPatch();
   }
 
   renderFireplaceFire(ctx, t) {

@@ -21,6 +21,7 @@ const ASSET_PATHS = {
   base1: './Assets/environment/watchtower_base_state1.png',
   base2: './Assets/environment/watchtower_base_state2.png',
   base3: './Assets/environment/watchtower_base_state3.png',
+  base3a: './Assets/environment/watchtower_base_state3a.png',
   base4: './Assets/environment/watchtower_base_state4.png',
   base5: './Assets/environment/watchtower_base_state5.png',
   fg1: './Assets/environment/watchtower_foreground_state1.png',
